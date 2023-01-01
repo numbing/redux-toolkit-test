@@ -7,6 +7,7 @@ import CostumModal from '../components/CostumModal';
 const ListOfBeers = () => {
     const [modal, setModal] = useState(false);
     const [beer, setBeer] = useState(null)
+    const [page, setPage] = useState(1)
     const dispatch = useDispatch()
     const beers = useSelector(state => state.beers)
 
@@ -18,9 +19,19 @@ const ListOfBeers = () => {
         setModal(!modal);
     }
 
+    const nextPage = () => {
+        setPage(page + 1)
+    }
+
+    const prevPage = () => {
+        if (page === 1) return
+        setPage(page - 1)
+
+    }
+
     useEffect(() => {
-        dispatch(fetchBeers())
-    }, [])
+        dispatch(fetchBeers(page))
+    }, [page])
     if (beers.loading) {
         return <div>Loading...</div>
     }
@@ -52,6 +63,8 @@ const ListOfBeers = () => {
                     })}
                 </tbody>
             </Table>
+            <h1 onClick={prevPage}>Prev</h1>
+            <h1 onClick={nextPage}>Next</h1>
         </div>
     )
 }

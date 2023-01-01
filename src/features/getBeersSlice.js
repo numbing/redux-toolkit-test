@@ -9,8 +9,8 @@ const initialState = {
     error: ''
 }
 
-export const fetchBeers = createAsyncThunk("beers/fetchBeers",(id)=>{
-    return axios.get(`${beersUrl}?brewed_after=03-2000/${id}`).then(response=>{
+export const fetchBeers = createAsyncThunk("beers/fetchBeers",(numberOfpage)=>{
+    return axios.get(`${beersUrl}?brewed_after=03-2000&page=${numberOfpage}`).then(response=>{
         return response.data
     })
 })

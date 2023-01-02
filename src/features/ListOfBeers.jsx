@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchBeers } from './getBeersSlice'
-import { Table } from 'reactstrap';
+import { VictoryPie } from 'victory';
 import CostumModal from '../components/CostumModal';
+import {
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+} from '@chakra-ui/react'
+
 
 const ListOfBeers = () => {
     const [modal, setModal] = useState(false);
@@ -10,6 +22,18 @@ const ListOfBeers = () => {
     const [page, setPage] = useState(1)
     const dispatch = useDispatch()
     const beers = useSelector(state => state.beers)
+    const firstBrewed = beers.beers.map(beer => {
+        return beer.first_brewed.substring(beer.first_brewed.length - 4)
+    })
+    const chartData = firstBrewed.reduce(function (obj, b) {
+        obj[b] = ++obj[b] || 1;
+        return obj;
+    }, {});
+
+    const chart = []
+    for (const [key, value] of Object.entries(chartData)) {
+        chart.push({ y: value, label: key })
+    }
 
     const toggle = (id) => {
         const beer = beers.beers.filter(beer => {
@@ -41,30 +65,40 @@ const ListOfBeers = () => {
     return (
         <div>
             <CostumModal toggle={toggle} modal={modal} beer={beer} />
-            <Table striped>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name: </th>
-                        <th>Description</th>
-                        <th>Food Paring</th>
-                    </tr>
-                </thead>
-                <tbody >
-                    {beers.beers.map((beer, index) => {
-                        return (
-                            <tr key={beer.id} onClick={() => toggle(beer.id)}>
-                                <th scope="row">{index + 1}</th>
-                                <td>{beer.name}</td>
-                                <td>{beer.description}</td>
-                                <td>{beer.food_pairing}</td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </Table>
+
+            <TableContainer >
+                <Table variant='striped' colorScheme='teal'>
+                    <TableCaption>Imperial to metric conversion factors</TableCaption>
+                    <Thead>
+                        <Tr>
+                        <Th>#</Th>
+                        <Th>Name: </Th>
+                        <Th>Description</Th>
+                        <Th>Food Paring</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {beers.beers.map((beer, index) => {
+                            return (
+                                <Tr key={beer.id} onClick={() => toggle(beer.id)}>
+                                    <Td scope="row">{index + 1}</Td>
+                                    <Td>{beer.name}</Td>
+                                    <Td noOfLines width="20%">{beer.description}</Td>
+                                    <Td noOfLines width="20%">{beer.food_pairing}</Td>
+                                </Tr>
+                            )
+                        })}
+                    </Tbody>
+
+                </Table>
+            </TableContainer>
             <h1 onClick={prevPage}>Prev</h1>
             <h1 onClick={nextPage}>Next</h1>
+            <div style={{ width: '200px' }}>
+                <VictoryPie
+                    data={chart}
+                />
+            </div>
         </div>
     )
 }

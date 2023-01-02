@@ -7,12 +7,14 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
     TableCaption,
     TableContainer,
+    Box,
+    Flex,
+    Button
 } from '@chakra-ui/react'
 
 
@@ -63,43 +65,46 @@ const ListOfBeers = () => {
         return <div>we have technical issue please try again later</div>
     }
     return (
-        <div>
+        <Box>
             <CostumModal toggle={toggle} modal={modal} beer={beer} />
+            <Flex justifyContent="space-around">
+                <TableContainer>
+                    <Table variant='striped' colorScheme='teal'>
+                        <TableCaption>List of beers made after March 2000</TableCaption>
+                        <Thead>
+                            <Tr>
+                                <Th>#</Th>
+                                <Th>Name: </Th>
+                                <Th>Description</Th>
+                                <Th>Food Paring</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {beers.beers.map((beer, index) => {
+                                return (
+                                    <Tr key={beer.id} onClick={() => toggle(beer.id)}>
+                                        <Td >{index + 1}</Td>
+                                        <Td maxWidth="200px" isTruncated>{beer.name}</Td>
+                                        <Td maxWidth="200px" isTruncated>{beer.description}</Td>
+                                        <Td maxWidth="200px" isTruncated>{beer.food_pairing}</Td>
+                                    </Tr>
+                                )
+                            })}
+                        </Tbody>
 
-            <TableContainer >
-                <Table variant='striped' colorScheme='teal'>
-                    <TableCaption>Imperial to metric conversion factors</TableCaption>
-                    <Thead>
-                        <Tr>
-                        <Th>#</Th>
-                        <Th>Name: </Th>
-                        <Th>Description</Th>
-                        <Th>Food Paring</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {beers.beers.map((beer, index) => {
-                            return (
-                                <Tr key={beer.id} onClick={() => toggle(beer.id)}>
-                                    <Td scope="row">{index + 1}</Td>
-                                    <Td>{beer.name}</Td>
-                                    <Td noOfLines width="20%">{beer.description}</Td>
-                                    <Td noOfLines width="20%">{beer.food_pairing}</Td>
-                                </Tr>
-                            )
-                        })}
-                    </Tbody>
-
-                </Table>
-            </TableContainer>
-            <h1 onClick={prevPage}>Prev</h1>
-            <h1 onClick={nextPage}>Next</h1>
-            <div style={{ width: '200px' }}>
-                <VictoryPie
-                    data={chart}
-                />
-            </div>
-        </div>
+                    </Table>
+                    <Flex justifyContent="flex-end">
+                        <Button disabled={page === 1} colorScheme="blue" marginRight="16px" onClick={prevPage}>Prev</Button>
+                        <Button colorScheme='blue' onClick={nextPage}>Next</Button>
+                    </Flex>
+                </TableContainer>
+                <Box style={{ width: '200px' }}>
+                    <VictoryPie
+                        data={chart}
+                    />
+                </Box>
+            </Flex>
+        </Box>
     )
 }
 

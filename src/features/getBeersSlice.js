@@ -10,7 +10,7 @@ const initialState = {
 }
 
 export const fetchBeers = createAsyncThunk("beers/fetchBeers",(numberOfpage)=>{
-    return axios.get(`${beersUrl}?brewed_after=03-2000&page=${numberOfpage}`).then(response=>{
+    return axios.get(`${beersUrl}?brewed_after=03-2000&page=${numberOfpage}&per_page=10`).then(response=>{
         return response.data
     })
 })
